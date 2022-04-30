@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smallmq.dao.SetMealDao">
+
+    <insert id="add" parameterType="com.smallmq.pojo.Setmeal">
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+
+        INSERT INTO t_setmeal (name, code, helpCode, sex, age, price, remark, attention, img)
+        values (#{name}, #{code}, #{helpCode}, #{sex}, #{age}, #{price}, #{remark}, #{attention}, #{img})
+
+    </insert>
+
+    <insert id="addSetMealAndCheckGroup" parameterType="map">
+        insert into t_setmeal_checkgroup (setmeal_id, checkgroup_id)
+        values (#{setmealId}, #{checkGroupId})
+    </insert>
+
+    <select id="findPage" parameterType="string" resultType="com.smallmq.pojo.Setmeal">
+        select * from t_setmeal
+    </select>
+
+    <select id="findAll" resultType="com.smallmq.pojo.Setmeal">
+        select * from t_setmeal
+    </select>
+
+    <resultMap type="com.smallmq.pojo.Setmeal" id="baseResultMap">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="code" property="code"/>
+        <result column="helpCode" property="helpCode"/>
+        <result column="sex" property="sex"/>
+        <result column="age" property="age"/>
+        <result column="price" property="price"/>
+        <result column="remark" property="remark"/>
+        <result column="attention" property="attention"/>
+        <result column="img" property="img"/>
+    </resultMap>
+    <resultMap type="com.smallmq.pojo.Setmeal"
+               id="findByIdResultMap"
+               extends="baseResultMap">
+        <collection property="checkGroups"
+                    javaType="ArrayList"
+                    ofType="com.smallmq.pojo.CheckGroup"
+                    column="id"
+                    select="com.smallmq.dao.CheckGroupDao.findCheckGroupById">
+        </collection>
+    </resultMap>
+    <select id="findById" resultMap="findByIdResultMap">
+        select * from t_setmeal  where id=#{id}
+    </select>
+
+
+
+</mapper>

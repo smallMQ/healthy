@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.smallmq.dao.OrderSettingDao">
+
+    <insert id="add" parameterType="com.smallmq.pojo.OrderSetting">
+        insert into t_ordersetting(orderDate, number, reservations)
+        values (#{orderDate}, #{number}, #{reservations})
+    </insert>
+
+    <select id="getCountByDate" parameterType="date" resultType="java.lang.Long">
+        select count(*)
+        from t_ordersetting
+        where orderDate = #{orderDate}
+    </select>
+
+    <update id="update" parameterType="date">
+        update t_ordersetting
+        <set>
+            <if test="number != null">
+                number = #{number},
+            </if>
+            <if test="reservations != null">
+                reservations = #{reservations}
+            </if>
+        </set>
+        where orderDate = #{orderDate}
+    </update>
+
+    <select id="getOrderSettingByMonth" parameterType="map" resultType="com.smallmq.pojo.OrderSetting">
+        select *
+        from t_ordersetting
+        where orderDate between #{dateBegin} and #{dateEnd}
+    </select>
+
+    <update id="editNumberByDate" parameterType="com.smallmq.pojo.OrderSetting">
+        update t_ordersetting
+        <set>
+            <if test="number != null">
+                number = #{number},
+            </if>
+        </set>
+        where orderDate = #{orderDate}
+    </update>
+</mapper>
